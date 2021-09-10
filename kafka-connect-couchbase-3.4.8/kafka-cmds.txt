@@ -1,0 +1,22 @@
+/opt/kafka_2.11-2.0.1/bin/connect-standalone.sh /opt/kafka/kafka-connect-couchbase-3.4.7/config/connect-standalone.properties /opt/kafka/kafka-connect-couchbase-3.4.7/config/pulse-cb-source.properties 
+/opt/kafka/bin/connect-standalone.sh  /opt/kafka/kafka-connect-couchbase-3.4.7/config/connect-standalone.properties /opt/kafka/kafka-connect-couchbase-3.4.7/config/couchbase-sourcePH.properties /opt/kafka/kafka-connect-couchbase-3.4.7/config/couchbase-sourceVN.properties
+/opt/kafka/bin/connect-standalone.sh  /opt/kafka/kafka-connect-couchbase-3.4.7/config/connect-standalone.properties /opt/kafka/kafka-connect-couchbase-3.4.7/config/pulse-cb-source.properties /opt/kafka/kafka-connect-couchbase-3.4.7/config/pulse-cb-sink.properties
+
+flink_docker_zookeeper1_1_f3cda7ddd081
+zookeeper1
+
+curl http://localhost:8083/connectors/
+curl -X DELETE http://localhost:8083/connectors/test1-lhs-rhs-connector1
+curl -X DELETE http://localhost:8083/connectors/test1-lhs-rhs-connector2
+
+connect-standalone.sh connect-standalone.properties pulse-cb-source.properties pulse-cb-sink.properties
+
+/opt/kafka_2.11-2.0.1/bin/kafka-topics.sh --zookeeper zookeeper1:2181 --list
+/opt/kafka_2.11-2.0.1/bin/kafka-topics.sh --zookeeper zookeeper1:2181 --describe --topic test1-pulse-events
+/opt/kafka_2.11-2.0.1/bin/kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list kafka3:9092 --topic test1-pulse-events
+/opt/kafka_2.11-2.0.1/bin/kafka-console-consumer.sh --bootstrap-server kafka3:9092 --topic test1-pulse-events --from-beginning
+
+/opt/kafka_2.11-2.0.1/bin/kafka-topics.sh --zookeeper zookeeper1:2181 --delete --topic test1-pulse-events
+/opt/kafka_2.11-2.0.1/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic LifeAsia --partition 0 --offset 21951290 --max-messages 5
+
+
